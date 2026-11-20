@@ -22,6 +22,7 @@ h1{font-size:20px;letter-spacing:.02em}
 .chip.on{background:var(--brown);border-color:var(--brown);color:#fff}
 main{padding:14px 12px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-width:1100px;margin:0 auto}
 .card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(60,40,20,.08);cursor:pointer;display:flex;flex-direction:column}
+.card img.ill{object-fit:contain;background:#efe6da}
 .card img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#eee}
 .cb{padding:10px 10px 12px}
 .no{font-size:11px;color:var(--sub);font-variant-numeric:tabular-nums}
@@ -79,7 +80,7 @@ function render(){
   document.getElementById("count").textContent=`${list.length}件 / 全${data.length}件`;
   const g=document.getElementById("grid");
   g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}">
-    <img src="img/${esc(d.no)}.jpg" alt="" loading="lazy">
+    <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="" loading="lazy" class="${d.img?"ill":""}">
     <div class="cb"><div class="no">No.${esc(d.no)}</div><div class="nm">${esc(d.name)}</div>
     <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span>${d.pattern?'<span class="badge">型紙</span>':""}</div></div></div>`).join("")
     :`<div class="empty">該当なし</div>`;
@@ -89,7 +90,7 @@ function open(no){
   const d=data.find(x=>x.no===no); if(!d)return;
   const r=(k,v)=>v?`<div class="row"><b>${k}</b><p>${esc(v)}</p></div>`:"";
   document.getElementById("sheet").innerHTML=`<button class="close" id="cl">×</button>
-   <img src="img/${esc(d.no)}.jpg" alt="">
+   <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="">
    <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2>
    <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span></div>
    ${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}</div>`;
