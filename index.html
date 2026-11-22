@@ -45,6 +45,15 @@ main{padding:14px 12px 40px;display:grid;grid-template-columns:repeat(auto-fill,
 .close{position:sticky;top:0;float:right;margin:10px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.9);font-size:18px;cursor:pointer;z-index:2}
 footer{text-align:center;font-size:12px;color:var(--sub);padding:0 0 30px}
 footer a{color:var(--brown)}
+.act{background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:4px 0 10px}
+.act b{display:block;font-size:11px;color:var(--sub);margin-bottom:6px}
+.act .btns{display:flex;flex-wrap:wrap;gap:6px}
+.act a{font-size:12px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--ink);text-decoration:none;background:#fff}
+.act a.cur{background:var(--brown);border-color:var(--brown);color:#fff}
+.act a.fix{display:block;text-align:center;margin-top:10px;background:#b5552e;border-color:#b5552e;color:#fff;border-radius:8px;padding:8px}
+.act .note{font-size:11px;color:var(--sub);margin-top:8px;line-height:1.5}
+.pend{display:inline-block;font-size:10px;background:#b5552e;color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px}
+
 .pat{background:#fffdf9;border:1px solid var(--line);border-radius:10px;margin:6px 0 8px;overflow:hidden}
 .pat img{width:100%;display:block;background:#fffdf9}
 .pat a{display:block;text-align:center;font-size:12px;color:var(--brown);padding:6px 0 8px;text-decoration:none}
@@ -82,9 +91,31 @@ function render(){
   g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}">
     <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="" loading="lazy" class="${d.img?"ill":""}">
     <div class="cb"><div class="no">No.${esc(d.no)}</div><div class="nm">${esc(d.name)}</div>
-    <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span>${d.pattern?'<span class="badge">型紙</span>':""}</div></div></div>`).join("")
+    <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span>${d.pattern?'<span class="badge">型紙</span>':""}${pendFor(d)?'<span class="pend">反映待ち</span>':""}</div></div></div>`).join("")
     :`<div class="empty">該当なし</div>`;
   g.querySelectorAll(".card").forEach(c=>c.onclick=()=>open(c.dataset.no));
+}
+const REPO="takumij527-a11y/leather-stock";
+const PKEY="leatherstock-pending";
+function getPend(){try{return JSON.parse(localStorage.getItem(PKEY)||"{}")}catch(e){return {}}}
+function setPend(p){try{localStorage.setItem(PKEY,JSON.stringify(p))}catch(e){}}
+function issueUrl(label,title,body){return `https://github.com/${REPO}/issues/new?labels=${encodeURIComponent(label)}&title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`}
+function pendFor(d){const p=getPend()[d.no];if(!p)return null;
+  if(p.status&&p.status===d.status)delete p.status;
+  if(p.fix&&d.reviewed&&d.reviewed>=p.fix)delete p.fix;
+  return (p.status||p.fix)?p:null}
+function actions(d){
+  const p=pendFor(d)||{};
+  const btns=STS.slice(1).map(s=>`<a href="${issueUrl("ステータス変更",`[ステータス] ${d.no} ${d.name} → ${s}`,`No: ${d.no}\n変更後: ${s}\n\n（このまま「Create」を押せばOK。次の定期更新で反映されます）`)}" target="_blank" rel="noopener" data-st="${s}" class="${s===d.status?"cur":""}">${s}</a>`).join("");
+  const fix=issueUrl("型紙修正",`[型紙修正] ${d.no} ${d.name}`,`No: ${d.no}\n\n## どこを直す？\n（例：底の三角はいらない／羽根の幅が狭い／写真と重なり順が違う）\n\n`);
+  let note="押すとGitHubの依頼画面が開きます。送信すると次の定期更新で反映（型紙修正は最優先）。";
+  if(p.status)note=`「${p.status}」に変更を依頼済み（反映待ち）。`+note;
+  if(p.fix)note="型紙の修正を依頼済み（反映待ち）。"+note;
+  return `<div class="act"><b>ステータスを変える</b><div class="btns">${btns}</div><a class="fix" href="${fix}" target="_blank" rel="noopener" data-fix="1">型紙の修正が必要</a><div class="note">${esc(note)}</div></div>`;
+}
+function bindActions(d){
+  document.querySelectorAll(".act a[data-st]").forEach(a=>a.addEventListener("click",()=>{const p=getPend();p[d.no]=Object.assign(p[d.no]||{}, {status:a.dataset.st});setPend(p);setTimeout(()=>{open(d.no);render()},300)}));
+  const f=document.querySelector(".act a[data-fix]"); if(f)f.addEventListener("click",()=>{const p=getPend();p[d.no]=Object.assign(p[d.no]||{}, {fix:new Date().toISOString().slice(0,10)});setPend(p);setTimeout(()=>{open(d.no);render()},300)});
 }
 function open(no){
   const d=data.find(x=>x.no===no); if(!d)return;
@@ -93,10 +124,11 @@ function open(no){
    <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="">
    <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2>
    <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span></div>
-   ${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
+   ${actions(d)}${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
   document.getElementById("ov").classList.add("show");
   document.getElementById("sheet").scrollTop=0;
   document.getElementById("cl").onclick=close;
+  bindActions(d);
 }
 function pat(d){
   if(!d.pattern)return "";
