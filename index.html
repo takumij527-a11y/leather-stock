@@ -93,7 +93,7 @@ function open(no){
    <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="">
    <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2>
    <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span></div>
-   ${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}</div>`;
+   ${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
   document.getElementById("ov").classList.add("show");
   document.getElementById("sheet").scrollTop=0;
   document.getElementById("cl").onclick=close;
