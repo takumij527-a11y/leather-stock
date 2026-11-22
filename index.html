@@ -65,13 +65,27 @@ table.parts th{font-size:11px;color:var(--sub);font-weight:600}
 </head>
 <body>
 <header>
-  <h1>レザー参考ストック</h1>
+  <div style="display:flex;justify-content:space-between;align-items:center"><h1>レザー参考ストック</h1><button id="gear" aria-label="設定" style="border:none;background:none;font-size:20px;cursor:pointer;color:var(--sub)">⚙</button></div>
   <div class="count" id="count"></div>
   <div class="chips" id="typeChips"></div>
   <div class="chips" id="stChips"></div>
 </header>
 <main id="grid"></main>
 <footer><a href="https://docs.google.com/spreadsheets/d/1hX1OshrNN4mnmZMkyNSMUsmfCmgTOIlAwgLEgvFBxpU/edit">スプシで開く</a></footer>
+<div class="ov" id="setov"><div class="sheet" style="padding:18px 18px 28px">
+ <h2 style="font-size:17px;margin-bottom:8px">ワンタップ更新の設定</h2>
+ <p style="font-size:13px;line-height:1.7;color:var(--ink)">GitHubのトークンを1回入れておくと、ステータスはボタン1つでその場で変わり、型紙修正もアプリの中から送れます。トークンはこの端末の中だけに保存されます。</p>
+ <ol style="font-size:12.5px;line-height:1.8;margin:10px 0 10px 18px;color:var(--ink)">
+  <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--brown)">GitHubのトークン作成ページ</a>を開く（Fine-grained token）</li>
+  <li>Repository access：Only select repositories → <b>leather-stock</b></li>
+  <li>Permissions：<b>Contents</b> と <b>Issues</b> を Read and write</li>
+  <li>作成して表示された文字列（github_pat_…）を下に貼る</li>
+ </ol>
+ <input id="tok" type="password" placeholder="github_pat_..." autocomplete="off" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:14px">
+ <div style="display:flex;gap:8px;margin-top:10px"><button id="tokSave" class="chip on" style="flex:1;padding:10px">保存</button><button id="tokDel" class="chip" style="padding:10px">削除</button><button id="setClose" class="chip" style="padding:10px">閉じる</button></div>
+ <p id="tokState" style="font-size:12px;color:var(--sub);margin-top:10px"></p>
+</div></div>
+<div id="toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2b211b;color:#fff;font-size:13px;padding:10px 16px;border-radius:999px;display:none;z-index:20"></div>
 <div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
 <script>
 const TYPES=["すべて","バッグ","財布・小物","収納・トレー","構造・展開図","TIPS"];
@@ -85,13 +99,13 @@ function chips(el,list,cur,set){
 function render(){
   chips(document.getElementById("typeChips"),TYPES,fType,v=>fType=v);
   chips(document.getElementById("stChips"),STS,fSt,v=>fSt=v);
-  const list=data.filter(d=>(fType==="すべて"||d.type===fType)&&(fSt==="すべて"||d.status===fSt)).sort((a,b)=>b.no.localeCompare(a.no));
+  const list=data.filter(d=>(fType==="すべて"||d.type===fType)&&(fSt==="すべて"||eff(d)===fSt)).sort((a,b)=>b.no.localeCompare(a.no));
   document.getElementById("count").textContent=`${list.length}件 / 全${data.length}件`;
   const g=document.getElementById("grid");
   g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}">
     <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="" loading="lazy" class="${d.img?"ill":""}">
     <div class="cb"><div class="no">No.${esc(d.no)}</div><div class="nm">${esc(d.name)}</div>
-    <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span>${d.pattern?'<span class="badge">型紙</span>':""}${pendFor(d)?'<span class="pend">反映待ち</span>':""}</div></div></div>`).join("")
+    <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span>${d.pattern?'<span class="badge">型紙</span>':""}${(pendFor(d)||{}).fix||((pendFor(d)||{}).status&&!getTok())?'<span class="pend">反映待ち</span>':""}</div></div></div>`).join("")
     :`<div class="empty">該当なし</div>`;
   g.querySelectorAll(".card").forEach(c=>c.onclick=()=>open(c.dataset.no));
 }
@@ -104,18 +118,57 @@ function pendFor(d){const p=getPend()[d.no];if(!p)return null;
   if(p.status&&p.status===d.status)delete p.status;
   if(p.fix&&d.reviewed&&d.reviewed>=p.fix)delete p.fix;
   return (p.status||p.fix)?p:null}
+const TKEY="leatherstock-token";
+function getTok(){try{return localStorage.getItem(TKEY)||""}catch(e){return ""}}
+function toast(t){const el=document.getElementById("toast");el.textContent=t;el.style.display="block";clearTimeout(toast._t);toast._t=setTimeout(()=>el.style.display="none",2600)}
+function eff(d){const p=pendFor(d);return (p&&p.status)||d.status}
+function b64dec(s){const bin=atob(s.replace(/\n/g,""));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u)}
+function b64enc(str){const u=new TextEncoder().encode(str);let bin="";for(let i=0;i<u.length;i+=8192)bin+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(bin)}
+async function gh(path,opt={}){const r=await fetch("https://api.github.com/repos/"+REPO+path,Object.assign({},opt,{headers:Object.assign({"Authorization":"Bearer "+getTok(),"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},opt.headers||{})}));if(!r.ok){const t=await r.text();throw new Error(r.status+" "+t.slice(0,120))}return r.json()}
+async function setStatusDirect(d,s){
+  for(let attempt=0;attempt<2;attempt++){
+    const f=await gh("/contents/data.json?ref=main");
+    const txt=b64dec(f.content);
+    const i=txt.indexOf('"no": "'+d.no+'"'); if(i<0)throw new Error("No."+d.no+"が見つからない");
+    const j=txt.indexOf('"status": "',i); const k=txt.indexOf('"',j+11);
+    const next=txt.slice(0,j)+'"status": "'+s+txt.slice(k);
+    try{await gh("/contents/data.json",{method:"PUT",body:JSON.stringify({message:`ステータス変更 ${d.no} → ${s}（アプリから）`,content:b64enc(next),sha:f.sha,branch:"main"})});return}
+    catch(e){if(!String(e.message).startsWith("409")||attempt)throw e}
+  }
+}
 function actions(d){
-  const p=pendFor(d)||{};
-  const btns=STS.slice(1).map(s=>`<a href="${issueUrl("ステータス変更",`[ステータス] ${d.no} ${d.name} → ${s}`,`No: ${d.no}\n変更後: ${s}\n\n（このまま「Create」を押せばOK。次の定期更新で反映されます）`)}" target="_blank" rel="noopener" data-st="${s}" class="${s===d.status?"cur":""}">${s}</a>`).join("");
-  const fix=issueUrl("型紙修正",`[型紙修正] ${d.no} ${d.name}`,`No: ${d.no}\n\n## どこを直す？\n（例：底の三角はいらない／羽根の幅が狭い／写真と重なり順が違う）\n\n`);
-  let note="押すとGitHubの依頼画面が開きます。送信すると次の定期更新で反映（型紙修正は最優先）。";
-  if(p.status)note=`「${p.status}」に変更を依頼済み（反映待ち）。`+note;
+  const p=pendFor(d)||{}, tok=getTok(), cur=eff(d);
+  const btns=STS.slice(1).map(s=>tok
+    ?`<a href="#" data-st="${s}" class="${s===cur?"cur":""}">${s}</a>`
+    :`<a href="${issueUrl("ステータス変更",`[ステータス] ${d.no} ${d.name} → ${s}`,`No: ${d.no}\n変更後: ${s}\n\n（このまま「Create」を押せばOK。次の定期更新で反映されます）`)}" target="_blank" rel="noopener" data-st="${s}" class="${s===cur?"cur":""}">${s}</a>`).join("");
+  const fixUrl=issueUrl("型紙修正",`[型紙修正] ${d.no} ${d.name}`,`No: ${d.no}\n\n## どこを直す？\n（例：底の三角はいらない／羽根の幅が狭い／写真と重なり順が違う）\n\n`);
+  const fixUI=tok
+    ?`<a class="fix" href="#" data-fixopen="1">型紙の修正が必要</a><div id="fixbox" style="display:none;margin-top:8px"><textarea id="fixtxt" rows="3" placeholder="どこを直す？（例：底の三角はいらない）" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:13px"></textarea><button id="fixsend" class="chip on" style="width:100%;margin-top:6px;padding:9px">送る（次の定期更新で最優先）</button></div>`
+    :`<a class="fix" href="${fixUrl}" target="_blank" rel="noopener" data-fix="1">型紙の修正が必要</a>`;
+  let note=tok?"ステータスは押すとすぐ保存されます。":"押すとGitHubの依頼画面が開きます。右上の⚙でトークンを入れると、ワンタップで変わるようになります。";
   if(p.fix)note="型紙の修正を依頼済み（反映待ち）。"+note;
-  return `<div class="act"><b>ステータスを変える</b><div class="btns">${btns}</div><a class="fix" href="${fix}" target="_blank" rel="noopener" data-fix="1">型紙の修正が必要</a><div class="note">${esc(note)}</div></div>`;
+  else if(p.status&&!tok)note=`「${p.status}」に変更を依頼済み（反映待ち）。`+note;
+  return `<div class="act"><b>ステータスを変える</b><div class="btns">${btns}</div>${fixUI}<div class="note">${esc(note)}</div></div>`;
 }
 function bindActions(d){
-  document.querySelectorAll(".act a[data-st]").forEach(a=>a.addEventListener("click",()=>{const p=getPend();p[d.no]=Object.assign(p[d.no]||{}, {status:a.dataset.st});setPend(p);setTimeout(()=>{open(d.no);render()},300)}));
-  const f=document.querySelector(".act a[data-fix]"); if(f)f.addEventListener("click",()=>{const p=getPend();p[d.no]=Object.assign(p[d.no]||{}, {fix:new Date().toISOString().slice(0,10)});setPend(p);setTimeout(()=>{open(d.no);render()},300)});
+  const tok=getTok();
+  document.querySelectorAll(".act a[data-st]").forEach(a=>a.addEventListener("click",async ev=>{
+    const s=a.dataset.st;
+    if(!tok){const p=getPend();p[d.no]=Object.assign(p[d.no]||{},{status:s});setPend(p);setTimeout(()=>{open(d.no);render()},300);return}
+    ev.preventDefault(); if(s===eff(d))return;
+    document.querySelectorAll(".act a[data-st]").forEach(x=>x.classList.toggle("cur",x===a));
+    try{await setStatusDirect(d,s);const p=getPend();p[d.no]=Object.assign(p[d.no]||{},{status:s});setPend(p);toast(`「${s}」に変更しました`);open(d.no);render()}
+    catch(e){toast("保存できませんでした："+e.message.slice(0,40));open(d.no)}
+  }));
+  const f=document.querySelector(".act a[data-fix]"); if(f)f.addEventListener("click",()=>{const p=getPend();p[d.no]=Object.assign(p[d.no]||{},{fix:new Date().toISOString().slice(0,10)});setPend(p);setTimeout(()=>{open(d.no);render()},300)});
+  const fo=document.querySelector(".act a[data-fixopen]"); if(fo)fo.addEventListener("click",ev=>{ev.preventDefault();const b=document.getElementById("fixbox");b.style.display=b.style.display==="none"?"block":"none";if(b.style.display==="block")document.getElementById("fixtxt").focus()});
+  const fs=document.getElementById("fixsend"); if(fs)fs.addEventListener("click",async()=>{
+    const t=document.getElementById("fixtxt").value.trim(); if(!t){toast("どこを直すか書いてね");return}
+    fs.disabled=true;
+    try{await gh("/issues",{method:"POST",body:JSON.stringify({title:`[型紙修正] ${d.no} ${d.name}`,body:`No: ${d.no}\n\n## どこを直す？\n${t}\n`,labels:["型紙修正"]})});
+      const p=getPend();p[d.no]=Object.assign(p[d.no]||{},{fix:new Date().toISOString().slice(0,10)});setPend(p);toast("修正依頼を送りました");open(d.no);render()}
+    catch(e){fs.disabled=false;toast("送れませんでした："+e.message.slice(0,40))}
+  });
 }
 function open(no){
   const d=data.find(x=>x.no===no); if(!d)return;
@@ -123,7 +176,7 @@ function open(no){
   document.getElementById("sheet").innerHTML=`<button class="close" id="cl">×</button>
    <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="">
    <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2>
-   <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(d.status)}">${esc(d.status)}</span></div>
+   <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span></div>
    ${actions(d)}${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
   document.getElementById("ov").classList.add("show");
   document.getElementById("sheet").scrollTop=0;
@@ -139,6 +192,16 @@ function pat(d){
 }
 function close(){document.getElementById("ov").classList.remove("show");}
 document.getElementById("ov").onclick=e=>{if(e.target.id==="ov")close();};
+(function(){const so=document.getElementById("setov"),st=document.getElementById("tokState");
+ const upd=()=>{st.textContent=getTok()?"トークン保存済み（ワンタップ更新ON）":"未設定（GitHubの画面経由）"};
+ document.getElementById("gear").onclick=()=>{upd();so.classList.add("show")};
+ document.getElementById("setClose").onclick=()=>so.classList.remove("show");
+ so.onclick=e=>{if(e.target===so)so.classList.remove("show")};
+ document.getElementById("tokSave").onclick=async()=>{const v=document.getElementById("tok").value.trim();if(!v)return;try{localStorage.setItem(TKEY,v)}catch(e){}
+   try{await gh("");toast("保存しました。接続OK");}catch(e){toast("保存したけど接続に失敗："+e.message.slice(0,30))}
+   document.getElementById("tok").value="";upd()};
+ document.getElementById("tokDel").onclick=()=>{try{localStorage.removeItem(TKEY)}catch(e){};toast("削除しました");upd()};
+})();
 fetch("data.json",{cache:"no-cache"}).then(r=>r.json()).then(j=>{data=j;render();}).catch(()=>{document.getElementById("grid").innerHTML='<div class="empty">読み込めませんでした</div>';});
 if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
 </script>
