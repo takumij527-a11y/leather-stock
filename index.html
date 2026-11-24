@@ -20,6 +20,11 @@ h1{font-size:20px;letter-spacing:.02em}
 .chips::-webkit-scrollbar{display:none}
 .chip{flex:none;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:999px;padding:6px 12px;font-size:13px;cursor:pointer}
 .chip.on{background:var(--brown);border-color:var(--brown);color:#fff}
+.card{position:relative}
+.fav{position:absolute;top:6px;right:6px;width:34px;height:34px;border-radius:50%;border:none;background:rgba(255,255,255,.88);font-size:19px;line-height:34px;text-align:center;color:#b9aa9a;cursor:pointer;padding:0;box-shadow:0 1px 3px rgba(0,0,0,.15)}
+.fav.on{color:#e0a100}
+.favbig{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:14px;cursor:pointer;color:var(--ink);margin-bottom:8px}
+.favbig.on{border-color:#e0a100;background:#fff8e1}
 main{padding:14px 12px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-width:1100px;margin:0 auto}
 .card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(60,40,20,.08);cursor:pointer;display:flex;flex-direction:column}
 .card img.ill{object-fit:contain;background:#efe6da}
@@ -97,6 +102,7 @@ table.parts th{font-size:11px;color:var(--sub);font-weight:600}
 <script>
 const TYPES=["すべて","バッグ","財布・小物","収納・トレー","構造・展開図","TIPS"];
 const STS=["すべて","候補","型紙中","製作中","完成","保留"];
+const FAVF="★お気に入り";
 let data=[],fType="すべて",fSt="すべて";
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function chips(el,list,cur,set){
@@ -105,16 +111,17 @@ function chips(el,list,cur,set){
 }
 function render(){
   chips(document.getElementById("typeChips"),TYPES,fType,v=>fType=v);
-  chips(document.getElementById("stChips"),STS,fSt,v=>fSt=v);
-  const list=data.filter(d=>(fType==="すべて"||d.type===fType)&&(fSt==="すべて"||eff(d)===fSt)).sort((a,b)=>b.no.localeCompare(a.no));
+  chips(document.getElementById("stChips"),[STS[0],FAVF,...STS.slice(1)],fSt,v=>fSt=v);
+  const list=data.filter(d=>(fType==="すべて"||d.type===fType)&&(fSt==="すべて"||(fSt===FAVF?isFav(d):eff(d)===fSt))).sort((a,b)=>b.no.localeCompare(a.no));
   document.getElementById("count").textContent=`${list.length}件 / 全${data.length}件`;
   const g=document.getElementById("grid");
-  g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}">
+  g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}"><button class="fav${isFav(d)?" on":""}" data-fav="${esc(d.no)}" aria-label="お気に入り">${isFav(d)?"★":"☆"}</button>
     ${d.photos&&d.photos.length?`<img src="${esc(d.photos[0])}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.className='ill';this.src='${esc(d.img||"")}'">`:`<img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="" loading="lazy" class="${d.img?"ill":""}">`}
     <div class="cb"><div class="no">No.${esc(d.no)}</div><div class="nm">${esc(d.name)}</div>
     <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span>${d.pattern?'<span class="badge">型紙</span>':""}${(pendFor(d)||{}).fix||((pendFor(d)||{}).status&&!getTok())?'<span class="pend">反映待ち</span>':""}</div></div></div>`).join("")
     :`<div class="empty">該当なし</div>`;
   g.querySelectorAll(".card").forEach(c=>c.onclick=()=>open(c.dataset.no));
+  g.querySelectorAll(".fav").forEach(b=>b.onclick=ev=>{ev.stopPropagation();toggleFav(b.dataset.fav)});
 }
 const REPO="takumij527-a11y/leather-stock";
 const PKEY="leatherstock-pending";
@@ -128,6 +135,32 @@ function pendFor(d){const p=getPend()[d.no];if(!p)return null;
 const TKEY="leatherstock-token";
 function getTok(){try{return localStorage.getItem(TKEY)||""}catch(e){return ""}}
 function toast(t){const el=document.getElementById("toast");el.textContent=t;el.style.display="block";clearTimeout(toast._t);toast._t=setTimeout(()=>el.style.display="none",2600)}
+const FKEY="leatherstock-fav";
+function getFav(){try{return JSON.parse(localStorage.getItem(FKEY)||"{}")}catch(e){return {}}}
+function setFav(m){try{localStorage.setItem(FKEY,JSON.stringify(m))}catch(e){}}
+function isFav(d){const m=getFav();if(d.no in m){if(m[d.no]===!!d.fav){delete m[d.no];setFav(m)}else return m[d.no]}return !!d.fav}
+let favQ=Promise.resolve();
+function toggleFav(no){
+  const d=data.find(x=>x.no===no);if(!d)return;
+  const v=!isFav(d);const m=getFav();m[no]=v;setFav(m);
+  render();if(document.getElementById("ov").classList.contains("show")&&document.getElementById("ov").dataset.no===no){const b=document.getElementById("favbig");if(b){const f=isFav(d);b.classList.toggle("on",f);b.textContent=f?"★ お気に入り":"☆ お気に入りに追加"}}
+  toast(v?"お気に入りに追加":"お気に入りから外しました");
+  if(getTok())favQ=favQ.then(()=>setFavDirect(d,v)).catch(e=>toast("同期できませんでした（この端末には保存済み）"));
+}
+async function setFavDirect(d,v){
+  for(let attempt=0;attempt<2;attempt++){
+    const f=await gh("/contents/data.json?ref=main");
+    const txt=b64dec(f.content);
+    const i=txt.indexOf('"no": "'+d.no+'"'); if(i<0)throw new Error("No."+d.no+"が見つからない");
+    const nx=txt.indexOf('"no": "',i+5); const j=txt.indexOf('"fav": ',i);
+    if(j<0||(nx>0&&j>nx))throw new Error("favなし");
+    const k=txt.indexOf(v?"false":"true",j); const cur=txt.slice(j+7,j+7+(txt[j+7]==="t"?4:5));
+    if(cur===String(v))return;
+    const next=txt.slice(0,j+7)+String(v)+txt.slice(j+7+cur.length);
+    try{await gh("/contents/data.json",{method:"PUT",body:JSON.stringify({message:`お気に入り ${d.no} ${v?"追加":"解除"}（アプリから）`,content:b64enc(next),sha:f.sha,branch:"main"})});d.fav=v;return}
+    catch(e){if(!String(e.message).startsWith("409")||attempt)throw e}
+  }
+}
 function eff(d){const p=pendFor(d);return (p&&p.status)||d.status}
 function b64dec(s){const bin=atob(s.replace(/\n/g,""));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u)}
 function b64enc(str){const u=new TextEncoder().encode(str);let bin="";for(let i=0;i<u.length;i+=8192)bin+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(bin)}
@@ -179,13 +212,14 @@ function open(no){
   const r=(k,v)=>v?`<div class="row"><b>${k}</b><p>${esc(v)}</p></div>`:"";
   document.getElementById("sheet").innerHTML=`<button class="close" id="cl">×</button>
    ${gallery(d)}
-   <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2>
+   <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2><button class="favbig${isFav(d)?" on":""}" id="favbig">${isFav(d)?"★ お気に入り":"☆ お気に入りに追加"}</button>
    <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span></div>
    ${actions(d)}${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
   document.getElementById("ov").classList.add("show");
   document.getElementById("sheet").scrollTop=0;
   document.getElementById("cl").onclick=close;
   bindActions(d);
+  document.getElementById("favbig").onclick=()=>toggleFav(d.no);
 }
 function gallery(d){
   const ph=(d.photos||[]).map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`).join("");
@@ -194,7 +228,7 @@ function gallery(d){
   return `<div class="gal">${ph}${il}</div><div class="galnote">写真${(d.photos||[]).length}枚：元の作品ページから表示（横にスワイプ）</div>`;
 }
 function pat(d){
-  if(!d.pattern)return "";
+  if(!d.pattern)return `<div class="row"><b>型紙</b><p>まだありません。☆お気に入りに入れたものから、定期更新で写真を見て優先して作ります。</p></div>`;
   const rows=(d.parts||[]).map(p=>`<tr><td>${esc(p[0])}</td><td>${esc(p[1])}</td><td>${esc(p[2])}</td><td>${esc(p[3])}</td></tr>`).join("");
   return `<div class="row"><b>型紙（寸法入り）</b><div class="pat"><img src="${esc(d.pattern)}" alt="型紙"><a href="${esc(d.pattern)}" target="_blank" rel="noopener">型紙を拡大して開く</a></div>
    ${rows?`<table class="parts"><tr><th>部品</th><th>寸法mm</th><th>枚数</th><th>革厚</th></tr>${rows}</table>`:""}
