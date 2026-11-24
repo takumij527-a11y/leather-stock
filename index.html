@@ -54,6 +54,10 @@ footer a{color:var(--brown)}
 .act .note{font-size:11px;color:var(--sub);margin-top:8px;line-height:1.5}
 .pend{display:inline-block;font-size:10px;background:#b5552e;color:#fff;border-radius:4px;padding:1px 5px;margin-left:4px}
 
+.gal{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;background:#eee}
+.gal img{flex:none;width:100%;scroll-snap-align:start;aspect-ratio:1/1;object-fit:cover}
+.gal img.ill{object-fit:contain;background:#efe6da}
+.galnote{font-size:10px;color:var(--sub);text-align:right;padding:3px 8px}
 .pat{background:#fffdf9;border:1px solid var(--line);border-radius:10px;margin:6px 0 8px;overflow:hidden}
 .pat img{width:100%;display:block;background:#fffdf9}
 .pat a{display:block;text-align:center;font-size:12px;color:var(--brown);padding:6px 0 8px;text-decoration:none}
@@ -103,7 +107,7 @@ function render(){
   document.getElementById("count").textContent=`${list.length}件 / 全${data.length}件`;
   const g=document.getElementById("grid");
   g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}">
-    <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="" loading="lazy" class="${d.img?"ill":""}">
+    ${d.photos&&d.photos.length?`<img src="${esc(d.photos[0])}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.className='ill';this.src='${esc(d.img||"")}'">`:`<img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="" loading="lazy" class="${d.img?"ill":""}">`}
     <div class="cb"><div class="no">No.${esc(d.no)}</div><div class="nm">${esc(d.name)}</div>
     <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span>${d.pattern?'<span class="badge">型紙</span>':""}${(pendFor(d)||{}).fix||((pendFor(d)||{}).status&&!getTok())?'<span class="pend">反映待ち</span>':""}</div></div></div>`).join("")
     :`<div class="empty">該当なし</div>`;
@@ -174,7 +178,7 @@ function open(no){
   const d=data.find(x=>x.no===no); if(!d)return;
   const r=(k,v)=>v?`<div class="row"><b>${k}</b><p>${esc(v)}</p></div>`:"";
   document.getElementById("sheet").innerHTML=`<button class="close" id="cl">×</button>
-   <img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="">
+   ${gallery(d)}
    <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2>
    <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span></div>
    ${actions(d)}${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
@@ -182,6 +186,12 @@ function open(no){
   document.getElementById("sheet").scrollTop=0;
   document.getElementById("cl").onclick=close;
   bindActions(d);
+}
+function gallery(d){
+  const ph=(d.photos||[]).map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`).join("");
+  const il=d.img?`<img src="${esc(d.img)}" alt="" class="ill">`:(d.photos&&d.photos.length?"":`<img src="img/${esc(d.no)}.jpg" alt="">`);
+  if(!ph)return il||`<img src="img/${esc(d.no)}.jpg" alt="">`;
+  return `<div class="gal">${ph}${il}</div><div class="galnote">写真：元の作品ページから表示（横にスワイプ）</div>`;
 }
 function pat(d){
   if(!d.pattern)return "";
