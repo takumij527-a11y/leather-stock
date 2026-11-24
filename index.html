@@ -191,7 +191,7 @@ function gallery(d){
   const ph=(d.photos||[]).map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`).join("");
   const il=d.img?`<img src="${esc(d.img)}" alt="" class="ill">`:(d.photos&&d.photos.length?"":`<img src="img/${esc(d.no)}.jpg" alt="">`);
   if(!ph)return il||`<img src="img/${esc(d.no)}.jpg" alt="">`;
-  return `<div class="gal">${ph}${il}</div><div class="galnote">写真：元の作品ページから表示（横にスワイプ）</div>`;
+  return `<div class="gal">${ph}${il}</div><div class="galnote">写真${(d.photos||[]).length}枚：元の作品ページから表示（横にスワイプ）</div>`;
 }
 function pat(d){
   if(!d.pattern)return "";
