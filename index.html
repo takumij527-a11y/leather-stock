@@ -76,17 +76,20 @@ table.parts th{font-size:11px;color:var(--sub);font-weight:600}
 </header>
 <main id="grid"></main>
 <footer><a href="https://docs.google.com/spreadsheets/d/1hX1OshrNN4mnmZMkyNSMUsmfCmgTOIlAwgLEgvFBxpU/edit">スプシで開く</a></footer>
-<div class="ov" id="setov"><div class="sheet" style="padding:18px 18px 28px">
- <h2 style="font-size:17px;margin-bottom:8px">ワンタップ更新の設定</h2>
- <p style="font-size:13px;line-height:1.7;color:var(--ink)">GitHubのトークンを1回入れておくと、ステータスはボタン1つでその場で変わり、型紙修正もアプリの中から送れます。トークンはこの端末の中だけに保存されます。</p>
- <ol style="font-size:12.5px;line-height:1.8;margin:10px 0 10px 18px;color:var(--ink)">
-  <li><a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener" style="color:var(--brown)">GitHubのトークン作成ページ</a>を開く（Fine-grained token）</li>
-  <li>Repository access：Only select repositories → <b>leather-stock</b></li>
-  <li>Permissions：<b>Contents</b> と <b>Issues</b> を Read and write</li>
-  <li>作成して表示された文字列（github_pat_…）を下に貼る</li>
+<div class="ov" id="setov" style="z-index:15"><div class="sheet" style="padding:18px 18px 28px">
+ <h2 style="font-size:17px;margin-bottom:8px">ワンタップ更新の設定（最初の1回だけ）</h2>
+ <p id="setWhy" style="font-size:13px;line-height:1.7;color:var(--ink)">これを1回やっておくと、ステータスも型紙修正もボタン1つでその場で反映されます。</p>
+ <ol style="font-size:13px;line-height:1.9;margin:10px 0 12px 18px;color:var(--ink)">
+  <li>下の「作成ページを開く」を押す（名前と権限は入力済み）</li>
+  <li>Repository access で <b>Only select repositories</b> → <b>leather-stock</b> を選んで、一番下の <b>Generate token</b></li>
+  <li>出てきた文字（github_pat_…）をコピーしてこの画面に戻り、「貼り付けて保存」</li>
  </ol>
- <input id="tok" type="password" placeholder="github_pat_..." autocomplete="off" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:14px">
- <div style="display:flex;gap:8px;margin-top:10px"><button id="tokSave" class="chip on" style="flex:1;padding:10px">保存</button><button id="tokDel" class="chip" style="padding:10px">削除</button><button id="setClose" class="chip" style="padding:10px">閉じる</button></div>
+ <a id="tokNew" href="https://github.com/settings/personal-access-tokens/new?name=leather-stock-app&description=%E3%83%AC%E3%82%B6%E3%83%BC%E5%8F%82%E8%80%83%E3%82%B9%E3%83%88%E3%83%83%E3%82%AF%E3%81%AE%E3%82%A2%E3%83%97%E3%83%AA%E3%81%8B%E3%82%89%E6%9B%B4%E6%96%B0&target_name=takumij527-a11y&expires_in=none&contents=write&issues=write" target="_blank" rel="noopener" class="chip" style="display:block;text-align:center;padding:11px;text-decoration:none">① 作成ページを開く</a>
+ <button id="tokPaste" class="chip on" style="width:100%;margin-top:8px;padding:11px">③ 貼り付けて保存</button>
+ <details style="margin-top:10px;font-size:12.5px;color:var(--sub)"><summary>貼り付けがうまくいかないとき</summary>
+ <input id="tok" type="password" placeholder="github_pat_..." autocomplete="off" style="width:100%;margin-top:8px;padding:10px;border:1px solid var(--line);border-radius:8px;font-size:14px">
+ <button id="tokSave" class="chip" style="width:100%;margin-top:6px;padding:9px">入力した文字で保存</button></details>
+ <div style="display:flex;gap:8px;margin-top:10px"><button id="tokDel" class="chip" style="flex:1;padding:10px">トークンを削除</button><button id="setClose" class="chip" style="flex:1;padding:10px">閉じる</button></div>
  <p id="tokState" style="font-size:12px;color:var(--sub);margin-top:10px"></p>
 </div></div>
 <div id="toast" style="position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2b211b;color:#fff;font-size:13px;padding:10px 16px;border-radius:999px;display:none;z-index:20"></div>
@@ -142,14 +145,11 @@ async function setStatusDirect(d,s){
 }
 function actions(d){
   const p=pendFor(d)||{}, tok=getTok(), cur=eff(d);
-  const btns=STS.slice(1).map(s=>tok
-    ?`<a href="#" data-st="${s}" class="${s===cur?"cur":""}">${s}</a>`
-    :`<a href="${issueUrl("ステータス変更",`[ステータス] ${d.no} ${d.name} → ${s}`,`No: ${d.no}\n変更後: ${s}\n\n（このまま「Create」を押せばOK。次の定期更新で反映されます）`)}" target="_blank" rel="noopener" data-st="${s}" class="${s===cur?"cur":""}">${s}</a>`).join("");
-  const fixUrl=issueUrl("型紙修正",`[型紙修正] ${d.no} ${d.name}`,`No: ${d.no}\n\n## どこを直す？\n（例：底の三角はいらない／羽根の幅が狭い／写真と重なり順が違う）\n\n`);
+  const btns=STS.slice(1).map(s=>`<a href="#" data-st="${s}" class="${s===cur?"cur":""}">${s}</a>`).join("");
   const fixUI=tok
     ?`<a class="fix" href="#" data-fixopen="1">型紙の修正が必要</a><div id="fixbox" style="display:none;margin-top:8px"><textarea id="fixtxt" rows="3" placeholder="どこを直す？（例：底の三角はいらない）" style="width:100%;padding:8px;border:1px solid var(--line);border-radius:8px;font-size:13px"></textarea><button id="fixsend" class="chip on" style="width:100%;margin-top:6px;padding:9px">送る（次の定期更新で最優先）</button></div>`
-    :`<a class="fix" href="${fixUrl}" target="_blank" rel="noopener" data-fix="1">型紙の修正が必要</a>`;
-  let note=tok?"ステータスは押すとすぐ保存されます。":"押すとGitHubの依頼画面が開きます。右上の⚙でトークンを入れると、ワンタップで変わるようになります。";
+    :`<a class="fix" href="#" data-needset="1">型紙の修正が必要</a>`;
+  let note=tok?"ステータスは押すとすぐ保存されます。":"最初の1回だけ設定が必要です（押すと設定画面が開きます）。";
   if(p.fix)note="型紙の修正を依頼済み（反映待ち）。"+note;
   else if(p.status&&!tok)note=`「${p.status}」に変更を依頼済み（反映待ち）。`+note;
   return `<div class="act"><b>ステータスを変える</b><div class="btns">${btns}</div>${fixUI}<div class="note">${esc(note)}</div></div>`;
@@ -158,13 +158,12 @@ function bindActions(d){
   const tok=getTok();
   document.querySelectorAll(".act a[data-st]").forEach(a=>a.addEventListener("click",async ev=>{
     const s=a.dataset.st;
-    if(!tok){const p=getPend();p[d.no]=Object.assign(p[d.no]||{},{status:s});setPend(p);setTimeout(()=>{open(d.no);render()},300);return}
-    ev.preventDefault(); if(s===eff(d))return;
+    ev.preventDefault(); if(!tok){openSetup("設定が終わったら、もう一度ステータスのボタンを押してください。");return} if(s===eff(d))return;
     document.querySelectorAll(".act a[data-st]").forEach(x=>x.classList.toggle("cur",x===a));
     try{await setStatusDirect(d,s);const p=getPend();p[d.no]=Object.assign(p[d.no]||{},{status:s});setPend(p);toast(`「${s}」に変更しました`);open(d.no);render()}
     catch(e){toast("保存できませんでした："+e.message.slice(0,40));open(d.no)}
   }));
-  const f=document.querySelector(".act a[data-fix]"); if(f)f.addEventListener("click",()=>{const p=getPend();p[d.no]=Object.assign(p[d.no]||{},{fix:new Date().toISOString().slice(0,10)});setPend(p);setTimeout(()=>{open(d.no);render()},300)});
+  const f=document.querySelector(".act a[data-needset]"); if(f)f.addEventListener("click",ev=>{ev.preventDefault();openSetup("設定が終わったら、もう一度「型紙の修正が必要」を押してください。")});
   const fo=document.querySelector(".act a[data-fixopen]"); if(fo)fo.addEventListener("click",ev=>{ev.preventDefault();const b=document.getElementById("fixbox");b.style.display=b.style.display==="none"?"block":"none";if(b.style.display==="block")document.getElementById("fixtxt").focus()});
   const fs=document.getElementById("fixsend"); if(fs)fs.addEventListener("click",async()=>{
     const t=document.getElementById("fixtxt").value.trim(); if(!t){toast("どこを直すか書いてね");return}
@@ -176,6 +175,7 @@ function bindActions(d){
 }
 function open(no){
   const d=data.find(x=>x.no===no); if(!d)return;
+  document.getElementById("ov").dataset.no=no;
   const r=(k,v)=>v?`<div class="row"><b>${k}</b><p>${esc(v)}</p></div>`:"";
   document.getElementById("sheet").innerHTML=`<button class="close" id="cl">×</button>
    ${gallery(d)}
@@ -202,15 +202,23 @@ function pat(d){
 }
 function close(){document.getElementById("ov").classList.remove("show");}
 document.getElementById("ov").onclick=e=>{if(e.target.id==="ov")close();};
-(function(){const so=document.getElementById("setov"),st=document.getElementById("tokState");
- const upd=()=>{st.textContent=getTok()?"トークン保存済み（ワンタップ更新ON）":"未設定（GitHubの画面経由）"};
- document.getElementById("gear").onclick=()=>{upd();so.classList.add("show")};
+const DEF_WHY="これを1回やっておくと、ステータスも型紙修正もボタン1つでその場で反映されます。";
+function openSetup(msg){const so=document.getElementById("setov");document.getElementById("setWhy").textContent=msg?DEF_WHY+msg:DEF_WHY;setUpd();so.classList.add("show")}
+function setUpd(){document.getElementById("tokState").textContent=getTok()?"設定済み（ワンタップ更新ON）":"まだ設定されていません"}
+async function saveTok(v){v=(v||"").trim();if(!/^(github_pat_|ghp_)/.test(v)){toast("github_pat_… の文字が見つかりません");return}
+  try{localStorage.setItem(TKEY,v)}catch(e){toast("この端末に保存できませんでした");return}
+  try{const j=await gh("");if(j.permissions&&j.permissions.push===false)throw new Error("leather-stockに書き込めません");
+    toast("設定できました。もうボタン1つで反映されます");document.getElementById("setov").classList.remove("show");
+    const o=document.getElementById("ov");if(o.classList.contains("show")){const no=(o.dataset.no||"");if(no)open(no)}render()}
+  catch(e){try{localStorage.removeItem(TKEY)}catch(_){}toast("つながりませんでした。leather-stock を選んだか確認してね");}
+  setUpd()}
+(function(){const so=document.getElementById("setov");
+ document.getElementById("gear").onclick=()=>openSetup("");
  document.getElementById("setClose").onclick=()=>so.classList.remove("show");
  so.onclick=e=>{if(e.target===so)so.classList.remove("show")};
- document.getElementById("tokSave").onclick=async()=>{const v=document.getElementById("tok").value.trim();if(!v)return;try{localStorage.setItem(TKEY,v)}catch(e){}
-   try{await gh("");toast("保存しました。接続OK");}catch(e){toast("保存したけど接続に失敗："+e.message.slice(0,30))}
-   document.getElementById("tok").value="";upd()};
- document.getElementById("tokDel").onclick=()=>{try{localStorage.removeItem(TKEY)}catch(e){};toast("削除しました");upd()};
+ document.getElementById("tokPaste").onclick=async()=>{try{const t=await navigator.clipboard.readText();await saveTok(t)}catch(e){toast("貼り付けできませんでした。下の入力欄を使ってね");so.querySelector("details").open=true}};
+ document.getElementById("tokSave").onclick=async()=>{const el=document.getElementById("tok");await saveTok(el.value);el.value=""};
+ document.getElementById("tokDel").onclick=()=>{try{localStorage.removeItem(TKEY)}catch(e){};toast("削除しました");setUpd()};
 })();
 fetch("data.json",{cache:"no-cache"}).then(r=>r.json()).then(j=>{data=j;render();}).catch(()=>{document.getElementById("grid").innerHTML='<div class="empty">読み込めませんでした</div>';});
 if("serviceWorker" in navigator && location.hostname.endsWith("github.io")){addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{})})}
