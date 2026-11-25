@@ -167,16 +167,16 @@ async function setFavDirect(d,v){
 function eff(d){const p=pendFor(d);return (p&&p.status)||d.status}
 function b64dec(s){const bin=atob(s.replace(/\n/g,""));const u=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);return new TextDecoder().decode(u)}
 function b64enc(str){const u=new TextEncoder().encode(str);let bin="";for(let i=0;i<u.length;i+=8192)bin+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(bin)}
-async function gh(path,opt={}){const r=await fetch("https://api.github.com/repos/"+REPO+path,Object.assign({},opt,{headers:Object.assign({"Authorization":"Bearer "+getTok(),"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},opt.headers||{})}));if(!r.ok){const t=await r.text();throw new Error(r.status+" "+t.slice(0,120))}return r.json()}
+async function gh(path,opt={}){const r=await fetch("https://api.github.com/repos/"+REPO+path,Object.assign({cache:"no-store"},opt,{headers:Object.assign({"Authorization":"Bearer "+getTok(),"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},opt.headers||{})}));if(!r.ok){const t=await r.text();throw new Error(r.status+" "+t.slice(0,120))}return r.json()}
 async function setStatusDirect(d,s){
-  for(let attempt=0;attempt<2;attempt++){
-    const f=await gh("/contents/data.json?ref=main");
+  for(let attempt=0;attempt<3;attempt++){
+    const f=await gh("/contents/data.json?ref=main&t="+Date.now());
     const txt=b64dec(f.content);
     const i=txt.indexOf('"no": "'+d.no+'"'); if(i<0)throw new Error("No."+d.no+"が見つからない");
     const j=txt.indexOf('"status": "',i); const k=txt.indexOf('"',j+11);
     const next=txt.slice(0,j)+'"status": "'+s+txt.slice(k);
     try{await gh("/contents/data.json",{method:"PUT",body:JSON.stringify({message:`ステータス変更 ${d.no} → ${s}（アプリから）`,content:b64enc(next),sha:f.sha,branch:"main"})});return}
-    catch(e){if(!String(e.message).startsWith("409")||attempt)throw e}
+    catch(e){if(!String(e.message).startsWith("409")||attempt>=2)throw e;await new Promise(r=>setTimeout(r,800))}
   }
 }
 function actions(d){
