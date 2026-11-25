@@ -25,6 +25,8 @@ h1{font-size:20px;letter-spacing:.02em}
 .fav.on{color:#e0a100}
 .favbig{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:14px;cursor:pointer;color:var(--ink);margin-bottom:8px}
 .favbig.on{border-color:#e0a100;background:#fff8e1}
+.archbig{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;border-radius:999px;padding:6px 14px;font-size:14px;cursor:pointer;color:var(--ink);margin:0 0 8px 6px}
+.archbig.on{border-color:#7a8a99;background:#eef2f5}
 main{padding:14px 12px 40px;display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;max-width:1100px;margin:0 auto}
 .card{background:var(--card);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(60,40,20,.08);cursor:pointer;display:flex;flex-direction:column}
 .card img.ill{object-fit:contain;background:#efe6da}
@@ -106,6 +108,7 @@ const tagLabel=t=>(TAGICON[t]||"#")+t;
 function allTags(){const s=new Set();data.forEach(d=>(d.tags||[]).forEach(t=>s.add(t)));return [...s]}
 const STS=["すべて","候補","型紙中","製作中","完成","保留"];
 const FAVF="★お気に入り";
+const ARCF="📦アーカイブ";
 let data=[],fType="すべて",fSt="すべて";
 const esc=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function chips(el,list,cur,set){
@@ -114,8 +117,8 @@ function chips(el,list,cur,set){
 }
 function render(){
   chips(document.getElementById("typeChips"),[...TYPES,...allTags().map(tagLabel)],fType,v=>fType=v);
-  chips(document.getElementById("stChips"),[STS[0],FAVF,...STS.slice(1)],fSt,v=>fSt=v);
-  const list=data.filter(d=>(fType==="すべて"||d.type===fType||(d.tags||[]).some(t=>tagLabel(t)===fType))&&(fSt==="すべて"||(fSt===FAVF?isFav(d):eff(d)===fSt))).sort((a,b)=>b.no.localeCompare(a.no));
+  chips(document.getElementById("stChips"),[STS[0],FAVF,...STS.slice(1),ARCF],fSt,v=>fSt=v);
+  const list=data.filter(d=>(fType==="すべて"||d.type===fType||(d.tags||[]).some(t=>tagLabel(t)===fType))&&(fSt===ARCF?isArch(d):(!isArch(d)&&(fSt==="すべて"||(fSt===FAVF?isFav(d):eff(d)===fSt))))).sort((a,b)=>b.no.localeCompare(a.no));
   document.getElementById("count").textContent=`${list.length}件 / 全${data.length}件`;
   const g=document.getElementById("grid");
   g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}"><button class="fav${isFav(d)?" on":""}" data-fav="${esc(d.no)}" aria-label="お気に入り">${isFav(d)?"★":"☆"}</button>
@@ -142,13 +145,40 @@ const FKEY="leatherstock-fav";
 function getFav(){try{return JSON.parse(localStorage.getItem(FKEY)||"{}")}catch(e){return {}}}
 function setFav(m){try{localStorage.setItem(FKEY,JSON.stringify(m))}catch(e){}}
 function isFav(d){const m=getFav();if(d.no in m){if(m[d.no]===!!d.fav){delete m[d.no];setFav(m)}else return m[d.no]}return !!d.fav}
+const AKEY="leatherstock-arch";
+function getArch(){try{return JSON.parse(localStorage.getItem(AKEY)||"{}")}catch(e){return {}}}
+function setArchM(m){try{localStorage.setItem(AKEY,JSON.stringify(m))}catch(e){}}
+function isArch(d){const m=getArch();if(d.no in m){if(m[d.no]===!!d.arch){delete m[d.no];setArchM(m)}else return m[d.no]}return !!d.arch}
+function archBtn(d){const a=isArch(d);return a?"↩ アーカイブから戻す":"📦 アーカイブ"}
+function toggleArch(no){
+  const d=data.find(x=>x.no===no);if(!d)return;
+  const v=!isArch(d);const m=getArch();m[no]=v;setArchM(m);
+  render();const b=document.getElementById("archbig");
+  if(b&&document.getElementById("ov").dataset.no===no){b.classList.toggle("on",v);b.textContent=archBtn(d)}
+  toast(v?"アーカイブしました（一覧には出ません。「📦アーカイブ」で見られます）":"アーカイブから戻しました");
+  if(getTok())favQ=favQ.then(()=>setFlagDirect(d,"arch",v,`アーカイブ ${d.no} ${v?"追加":"解除"}（アプリから）`)).catch(e=>toast("同期できませんでした（この端末には保存済み）"));
+}
+async function setFlagDirect(d,key,v,msg){
+  for(let attempt=0;attempt<3;attempt++){
+    const f=await gh("/contents/data.json?ref=main&t="+Date.now());
+    const txt=b64dec(f.content);
+    const i=txt.indexOf('"no": "'+d.no+'"'); if(i<0)throw new Error("No."+d.no+"が見つからない");
+    const nx=txt.indexOf('"no": "',i+5); const tag='"'+key+'": '; const j=txt.indexOf(tag,i);
+    if(j<0||(nx>0&&j>nx))throw new Error(key+"なし");
+    const p=j+tag.length; const cur=txt.startsWith("true",p)?"true":"false";
+    if(cur===String(v)){d[key]=v;return}
+    const next=txt.slice(0,p)+String(v)+txt.slice(p+cur.length);
+    try{await gh("/contents/data.json",{method:"PUT",body:JSON.stringify({message:msg,content:b64enc(next),sha:f.sha,branch:"main"})});d[key]=v;return}
+    catch(e){if(!String(e.message).startsWith("409")||attempt==2)throw e}
+  }
+}
 let favQ=Promise.resolve();
 function toggleFav(no){
   const d=data.find(x=>x.no===no);if(!d)return;
   const v=!isFav(d);const m=getFav();m[no]=v;setFav(m);
   render();if(document.getElementById("ov").classList.contains("show")&&document.getElementById("ov").dataset.no===no){const b=document.getElementById("favbig");if(b){const f=isFav(d);b.classList.toggle("on",f);b.textContent=f?"★ お気に入り":"☆ お気に入りに追加"}}
   toast(v?"お気に入りに追加":"お気に入りから外しました");
-  if(getTok())favQ=favQ.then(()=>setFavDirect(d,v)).catch(e=>toast("同期できませんでした（この端末には保存済み）"));
+  if(getTok())favQ=favQ.then(()=>setFlagDirect(d,"fav",v,`お気に入り ${d.no} ${v?"追加":"解除"}（アプリから）`)).catch(e=>toast("同期できませんでした（この端末には保存済み）"));
 }
 async function setFavDirect(d,v){
   for(let attempt=0;attempt<2;attempt++){
@@ -215,7 +245,7 @@ function open(no){
   const r=(k,v)=>v?`<div class="row"><b>${k}</b><p>${esc(v)}</p></div>`:"";
   document.getElementById("sheet").innerHTML=`<button class="close" id="cl">×</button>
    ${gallery(d)}
-   <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2><button class="favbig${isFav(d)?" on":""}" id="favbig">${isFav(d)?"★ お気に入り":"☆ お気に入りに追加"}</button>
+   <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2><button class="favbig${isFav(d)?" on":""}" id="favbig">${isFav(d)?"★ お気に入り":"☆ お気に入りに追加"}</button><button class="archbig${isArch(d)?" on":""}" id="archbig">${archBtn(d)}</button>
    <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span>${(d.tags||[]).map(t=>`<span class="tag">${esc(tagLabel(t))}</span>`).join("")}<span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span></div>
    ${actions(d)}${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
   showLayer(document.getElementById("ov"));
@@ -223,6 +253,7 @@ function open(no){
   document.getElementById("cl").onclick=close;
   bindActions(d);
   document.getElementById("favbig").onclick=()=>toggleFav(d.no);
+  document.getElementById("archbig").onclick=()=>toggleArch(d.no);
 }
 function gallery(d){
   const ph=(d.photos||[]).map(u=>`<img src="${esc(u)}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.remove()">`).join("");
