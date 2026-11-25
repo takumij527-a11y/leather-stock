@@ -5123,6 +5123,9 @@
 "level": "★",
 "status": "候補",
 "fav": false,
+"tags": [
+"コーヒー"
+],
 "memo": "フィルターの大きさ（101／102／103）に合わせて写し直す。",
 "pattern": "pat/132.svg",
 "parts": [
@@ -5213,6 +5216,9 @@
 "level": "★★",
 "status": "候補",
 "fav": true,
+"tags": [
+"コーヒー"
+],
 "memo": "元作品 16,500円（ジャーカバー単品 6,800円）。C40とC60でサイズが少し違う（ジャー部分は共通）。",
 "pattern": "pat/134.svg",
 "parts": [
@@ -5255,5 +5261,382 @@
 ],
 "patnote": "写真で立体確認済み（2026-11-25）。①本体とジャーの周りを紙テープで測る→①②の長さを決める ②①②の両端に菱目（ピッチ6）を打ち、円筒に丸めて端を突き合わせ、×のクロスステッチでかがる（濡らして本体にかぶせたまま乾かすとぴったり）③③の中央の穴は軸の太さを測って開ける ④ホックは①の上端に2か所（③の耳用・④用）、④⑤の先に。寸法は写真の比率から割り出した推定。",
 "reviewed": "2026-11-25"
+},
+{
+"no": "135",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "吊り下げ式のフィルターケース（ひも付き）",
+"src": "Creema「本革 コーヒーフィルターケース」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/11957591/detail",
+"photos": [
+"https://c.p02.c4a.im/user/354596/exhibits/11957591/1_228392149254477f661ebd5548263cbc?d=583x585",
+"https://c.p02.c4a.im/user/354596/exhibits/11957591/2_89447b2fb1542c429950e51693845ad1?d=583x585",
+"https://c.p02.c4a.im/user/354596/exhibits/11957591/3_54d9c080acb32b46b3ade128de841d06?d=583x585",
+"https://c.p02.c4a.im/user/354596/exhibits/11957591/4_f0e435b33cf124c85dd7600537c13862?d=583x585"
+],
+"structure": "（作品説明と写真より）扇形の前後2枚を手縫いした定番形。上の角にひもを付けて吊るす。鍋敷きにもなる平たい作り。",
+"size": "約20×16cm",
+"spec": "クロムなめし牛革",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 2,300円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "136",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "円錐フィルター用ケース（ホックで閉じる）",
+"src": "Creema「コーヒーフィルターケース 円錐型 HARIO プエブロ」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/17563570/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/17563570/8577d002d7928d6383eee8965d5dc3ad8691079df4f314532fe194ecc439e385?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/00edd24ad763897c5919d45cdbe57eec0d2410a95bc89c7f40f340d79d4f4a18?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/44725206f32cdae6f04d1118705dfda265eb1aa63fe672bf72bc5eb5ca25a5ba?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/7c6636487f0b61bba74c9b60ea10d1276dd675efb73a5975c9ab0073370b2d6a?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/f95e39751430304259bf34f3f72d22ca813814e3551319ac54d9c7c33478df21?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/31481a1fc9fda889e5208af3c721e126de106052fd2d4d43b6c1d7750b0654c4?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/e7e1aed776fb0e44664d9b1b691c15a5f9d4b06219fe5dd423118c9a21b31646?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/182b7ae25efda37ac7c67e4cf054f851bffad58ec84e916c70a4a9bd9b756613?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/9b7b5317a948afbefbd22904c44d948d95d845f75709ab6cd51eec35c27f1742?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/688d19a05854893c4225527ecb5b993be11f575ed4d1c7f20558b1e3ac7c6954?d=583x585",
+"https://c.p02.c4a.im/images/item/17563570/b7e7010dcb5e275a4175a4d0378b0c0c16876f94f7fa603cdd1dbc3456aed840?d=583x585"
+],
+"structure": "（作品説明と写真より）円錐（V60）用の三角形のケース。ホックで閉じ、まわりを親指をかけやすい曲線にカット。真鍮の組ねじ＋二重リングにロープを付けて吊れる。約20枚。",
+"size": "01用135×135／02用150×150",
+"spec": "プエブロ",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 6,600円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "137",
+"date": "2026-11-25",
+"type": "収納・トレー",
+"name": "真鍮脚で立つフィルターケース",
+"src": "Creema「【Vettina】本革 コーヒーフィルターケース 真鍮脚 総手縫い CAPLIANNA」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/21213803/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/21213803/83aca74b35b206816e494abd50bd65027b87e8633a29bbc7556233ed64ca3a4f?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/ff45810fd5b5aa688c4eca325789a4ef8c5879f773fa545832266a17a9410bf4?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/9866929180a59bfae78f7b6da096a273d729360aca923e5f7c32d96421d79005?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/99bb56cedff615bf489aeef42cc13d099e8cdeb7290c5f1fcef471abdd2f9f0b?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/852813718607a5866fb6ce665b03421c387b691796d7eebb35242607af84ab1f?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/9ec7171b68650422a6c3a7debacb0aa0a253f3f9953d133cf0c6e8d9f3139891?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/7ae043132c70e03824062f11c38284ec2cca15f211e93e8a49e266c2c8f80a7e?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/5d797ff4da65fccec883c2b03c1cdb06f07b9c7f92dabd0e582bbfb99869bee2?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/17e6923079073f2eb960f6cc81f77f7faee95ab482b904c3f65d5bbf16810d46?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/1a912a0481a4050c191a30a5afd4fd3d8ae59e87870a4b81400086e4095e86b5?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/0e5ab35043c265c726cee031335a2bcd1da4be99370d25655922da50ccfbd371?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/af519336c46c33e9444b944899289f8b58c0b97a773895817f4b54ac70d3ccf8?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/06c6b7196f8bad3ef8b71be32a466305820cc1f133dfd248b5bb97ac070059f2?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/d8c5431203e55290654ce0a9b702b436697865b0bf77077e14f2503d1e29bde4?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/85e8cf1b6fad611bda56f4e2877dab302c72f315859d848b1e41c50009fc3097?d=583x585",
+"https://c.p02.c4a.im/images/item/21213803/720f7123947ab65dbc7b898f72785b573c2fbf1937abd4b3e12023aff69fb9da?d=583x585"
+],
+"structure": "（作品説明と写真より）逆三角のシルエットの革ケースを真鍮の脚（枠）に4か所のホックで留める置き型。円錐用（下がとがる）と台形用（下を落とす）の2型。総手縫い。",
+"size": "縦110×横190×幅70",
+"spec": "イタリア製ヌメ革・真鍮の枠",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 10,800円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "138",
+"date": "2026-11-25",
+"type": "収納・トレー",
+"name": "マグネットで貼るフィルターホルダー（真鍮バー）",
+"src": "Creema「【新作】本革コーヒーフィルターホルダー マグネット ペーパーケース イタリアンレザー 真鍮 キッチン収納」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/20572973/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/20572973/73a9682a60c2ea4b3718ba05ef4a7dd6ba0ca90d59d8b5d724434f66a294454e?d=583x585",
+"https://c.p02.c4a.im/images/item/20572973/da8283cd5c46c1f67b6b8c3653b491d40dcd23046ced2bde779bdbd0dde822eb?d=583x585",
+"https://c.p02.c4a.im/images/item/20572973/dda63ad111ecc5651bc3e0ac99b25e40df20bf2413aa8eac0b3a069c0a7196f3?d=583x585",
+"https://c.p02.c4a.im/images/item/20572973/0869dcb2be4627f07e17777532729cbfbeb5839ddcb2cc5764a74fce8f7326aa?d=583x585",
+"https://c.p02.c4a.im/images/item/20572973/47b56a9238f4fef72ee829f3440ae7822b2bc5b0a37a075267717cba1ec3ff27?d=583x585",
+"https://c.p02.c4a.im/images/item/20572973/ea7e8278c0c585d9284a4fb18bfe1ddfe299ba6a1e18c080ad79027d0f39a8df?d=583x585",
+"https://c.p02.c4a.im/images/item/20572973/6e0686be6e64c53c359ca9896834d72b83a98fd6ddebccc5e9447a7ed1c97413?d=583x585"
+],
+"structure": "（作品説明と写真より）木の芯を革で包んだ細長いバー型。前に槌目の真鍮バー、両脇に飾り鋲、背面に磁石2個で冷蔵庫などに貼る。フィルターはバーに差して立てる。",
+"size": "横170×縦27×奥行50（約40枚）",
+"spec": "イタリアンレザー・木の芯・真鍮・ネオジム磁石",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 3,800円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "139",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "一枚革を折るフィルターホルダー",
+"src": "Creema「一枚革で作る本革コーヒーフィルターホルダー 手縫い キャンプにぴったり【選べる革とステッチ】【名入れ無料】」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/10592441/detail",
+"photos": [
+"https://c.p02.c4a.im/user/35196/exhibits/10592441/0_837a9b231a38194ad3975347b9874793?d=583x585",
+"https://c.p02.c4a.im/user/35196/exhibits/10592441/1_24c6df5611829c7ed94934fd102f4fe6?d=583x585",
+"https://c.p02.c4a.im/user/35196/exhibits/10592441/2_4d57dba1c83c0ee9929ea1854e2d8714?d=583x585",
+"https://c.p02.c4a.im/user/35196/exhibits/10592441/3_0b0198d716a0a525198317daabb8161f?d=583x585",
+"https://c.p02.c4a.im/user/35196/exhibits/10592441/4_f6537fd0280d8b06e4393139edc6f768?d=583x585",
+"https://c.p02.c4a.im/images/item/10592441/0be52e6fd1fd7bfa6fc6d63850b3944e512df0447b34d47858b87f8ac26464a2?d=583x585"
+],
+"structure": "（作品説明と写真より）一枚革を三角に折ってギボシで留めるだけのシンプル形。ハトメ＋革ひもで吊れる。円錐・台形どちらも可。1〜2人用の小さい版もある。",
+"size": "閉じて縦150×横145（約15枚）",
+"spec": "栃木レザー（サドル）・ギボシ・ハトメ",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 3,900円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "140",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "富士山形のフィルターホルダー",
+"src": "Creema「ヌメ革コーヒーフィルターホルダーFUJISAN〔受注生産品〕」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/18108262/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/18108262/03504054368d634b45a9b6d024dd6ca6da070da5feb7be2b61b6b51ad4475472?d=583x585",
+"https://c.p02.c4a.im/images/item/18108262/fee8eec40a56c8b9c6b6459bb4e8a54e7fd46e38afd10eba7dc638414622f316?d=583x585",
+"https://c.p02.c4a.im/images/item/18108262/5e7a485587489dc67a6b70f1306f8ae9278ff5ade893151c7cf2be9838dc40ac?d=583x585",
+"https://c.p02.c4a.im/images/item/18108262/341018c26404d6e022bd996c8781d8c4ba29b4c99da28cfae892a97f080e56f4?d=583x585",
+"https://c.p02.c4a.im/images/item/18108262/91209160ae5226fa966d1c7050d9efbec540366f787b736d23e4a8ff5f00621d?d=583x585",
+"https://c.p02.c4a.im/images/item/18108262/f2cc6ffcfc54ac8cd97af81545c4b1a90f538ba649cdd04f4b0d10ad12a639eb?d=583x585",
+"https://c.p02.c4a.im/images/item/18108262/eb4376b7bb800d2a0b7cedd6bfe437126308202794bc6145b818c60c8a653f3a?d=583x585",
+"https://c.p02.c4a.im/images/item/18108262/13e5deb58c397ed40d2b1971d450c3b850560cce379134ada97f56d9182753b8?d=583x585"
+],
+"structure": "（作品説明と写真より）富士山の形の前後を縫った筒状。上からも下からも取り出せ、後ろのボタンで量を調整。両脇のハトメに革ひもを付けて吊るす。",
+"size": "2〜4杯用（最大60枚）",
+"spec": "ヌメ革・ハトメ・ボタン",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 4,180円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "141",
+"date": "2026-11-25",
+"type": "収納・トレー",
+"name": "壁掛けも置きもできるフィルタースタンド",
+"src": "Creema「本革コーヒーフィルターホルダー｜壁掛けできるレザースタンド｜ドリップコーヒー収納」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/20569644/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/20569644/213db41e266f23cf5cd048cf64e7e9f53631055f35d30a138800672ffd5d6820?d=583x585",
+"https://c.p02.c4a.im/images/item/20569644/ae8f9446370cc5d76409a9fa92e8d8abcea8b316f3215be2f110097cdcd0d5b2?d=583x585",
+"https://c.p02.c4a.im/images/item/20569644/2d9875c5ad593d15c2b79e4e0d7323c25926956a03a03ec66f22f92ebb2ccad5?d=583x585",
+"https://c.p02.c4a.im/images/item/20569644/72fd2467af2f820699ef9e2748f1c7318a929f21e9219d1e7e79b741bbebb677?d=583x585",
+"https://c.p02.c4a.im/images/item/20569644/317fdcdbf5d6b18986bb5f7801ebce103e023b89e750f14e4880ec1a29a57ae9?d=583x585"
+],
+"structure": "（作品説明と写真より）革の曲線で包む自立型。上から差し込み、前面のカット部分から1枚ずつ取り出す。壁掛け・卓上どちらでも。",
+"size": "横140×縦140×奥行50（約100枚）",
+"spec": "本革・真鍮",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 5,800円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "142",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "縦横どちらからも入れられる携帯フィルターケース",
+"src": "Creema「本革 コーヒーフィルターケース」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/19283993/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/19283993/f7245d1798763908423bdf7e775b7890b79e390183abf680c63e29c3df74329e?d=583x585",
+"https://c.p02.c4a.im/images/item/19283993/9041c5da0323172c36a7278dd4e3eed8726fd01bcab647bfc7b84a131b83d1b2?d=583x585",
+"https://c.p02.c4a.im/images/item/19283993/5ad09782fc8929eb4301f44cd8eeeaffcfce57d3fa127554a99e713a08808611?d=583x585",
+"https://c.p02.c4a.im/images/item/19283993/0c255187cdb1b01582e288c1d3f12a347a93aac42c18de8ec6d96b20e9842db6?d=583x585"
+],
+"structure": "（作品説明と写真より）台形の前後をホックで閉じる携帯型。縦・横どちらの口からも入れられ、ハトメで吊るせる。キャンプ向き。",
+"size": "台形フィルター用",
+"spec": "国産牛革・ホック・ハトメ",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 3,000円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "143",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "ハンドミルの化粧カバー＋グリップベルト（タイムモアS3用）",
+"src": "Creema「タイムモア コーヒーグラインダー S3専用 本革製化粧カバー グリップベルト コーヒーミル レザークラフト」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/20620226/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/20620226/61ca74e88b8630d919a1912b430ca2b5da2e3897b1b9d50c2f5bba9632a98c82?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/08fb321bd1947254719e99c270e2dfae6ad30d4860520d69db35bd0ded97a7f4?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/b0e91c25219814485ef837074f929eedd6951d6f626fd5b214bb9e011fd8b12a?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/7a5297336e92b7f2ef662a21c295960888bd2bbd7efa56d5b507287644337d65?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/b27ec1f9657eb51fa343a9960764a7780d9706b36c8a2c67cad911b66a140e0b?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/d309b6f33a9654dbd4cac74ae756cc016f83c25b97a0470891a4018161e2dcf9?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/ab951af32e453ee12c419bd0d69938ad38ba67efd3575e7d7dff0836133a1994?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/adf181587e1c404a0916cc97337392ad9d75b615fc75fdb786f2521a1ecb9916?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/dc20637627633d24a35fe2e29f7cf71cbe463f2dd558917d4dd09dd88f6a7698?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/d99d5477a09e6008606d19f54f0701d143e1ec8396e12e3a4c4a5223077d42d4?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/5bd3658227c05c79be2cc590d939c0c678cd0fb1a94df5841b44af27a2ec89ae?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/5257b8bede51eec2bccab2ce6735963c9369710ed6a46afe7506a1ca28894cb9?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/5308f9d20da0ba99a36a7a210a205a748c20b1231957d40160f5dab208dd5f17?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/68826debc0c356a83f49706eddd1586c96ee1953e5d9a7b7324649ca998194ab?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/4797f6c2bea18ca30cb9d1973146ec9c4de2fbb019b2a8a828b74c689f37b21b?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/2925781a366941d0ebaabfce79b7b1cef238093c1bd60a106819562dc73b4814?d=583x585",
+"https://c.p02.c4a.im/images/item/20620226/b871a2ce2f5cbda050f62d8327683f3ba84fed8e22e7850f2512b0dc2f3337d6?d=583x585"
+],
+"structure": "（作品説明と写真より）本体と粉受けの2ピースのカバー。本体から伸びるベルトを粉受け側にボタンで留め、使うときは外してベルトに指を通して握る。金属に当たる内側に布を貼る。",
+"size": "S3専用（コマンダンテ用は要実測）",
+"spec": "牛革1.3mm・内側に保護布",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 4,000円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "144",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "ハンドルを横に留めるミルカバー（ポーレックス用）",
+"src": "Creema「【選べるレザーと金具】ハンドミルカバー/ハンドルホルダー/ポーレックス/イタリアンレザー/コーヒーミル」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/20808692/detail",
+"photos": [
+"https://c.p02.c4a.im/images/item/20808692/600476bedf36f473adf04bac3b17330c954672c55343958e489b0b1e0b903341?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/d46673c4e0efaa8a090634199e57403e668af70f6128d9ed21747e6bba9e2182?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/b436345f0a181846d7b1ebbf9ca8f12f3dbdd02e2f6b449632a55a5fb1b51d77?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/2cdc9e67a5232a8b4ff910ff158121b5af8d870dae4e89d0430e8a07c429778e?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/d68dea4d9a56d76b88969ed670dec451847b705fd7e31674f0a30ea03e1d2977?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/6f2b1d43ce5bc17b07d2baf1f344441fe2ae686d94c98cecd49ab45e76200370?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/a6aadf3d2b3053f1844b74a0de99883e0bf42051553e9cabd2bf005bac73dacd?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/e3a49215eb0ecfbba3ee517a22ebd9402dc28722d1cdd9e19051a187f7209fca?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/21ce41b2d1a8c79ed569979674288277be76865903fd1cfcfaf565365d8ec633?d=583x585",
+"https://c.p02.c4a.im/images/item/20808692/6a2705930066d2dd7177ab113327dd0c1341535bb54ea0f4b77c0314b2892449?d=583x585"
+],
+"structure": "（作品説明と写真より）本体カバーとハンドル固定ベルトが一体。外したハンドルを横にパチンと固定でき、持ち運びの金属音も防ぐ。グリップ代わりにもなる。",
+"size": "ポーレックス用（コマンダンテ用は要実測）",
+"spec": "イタリアンレザー・ホック",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 3,800円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "145",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "ミルのハンドルホルダー（ポーレックス用）",
+"src": "Creema「【カラーオーダー】POLEX ポーレックスコーヒーミル ハンドルホルダー【ブッテーロレザー】珈琲」を参考に再現（個人製作用）",
+"url": "https://www.creema.jp/item/5578698/detail",
+"photos": [
+"https://c.p02.c4a.im/user/1622327/exhibits/5578698/0_cc144c8706544090f24d6d8442bc02a9?d=583x585",
+"https://c.p02.c4a.im/user/1622327/exhibits/5578698/1_896a9327f7dd6daf2c1f5d45f599765a?d=583x585",
+"https://c.p02.c4a.im/user/1622327/exhibits/5578698/2_d5476294d3781fcf57f5c6a9fdc6df5c?d=583x585",
+"https://c.p02.c4a.im/user/1622327/exhibits/5578698/3_1f13b52c7342d4713e7217b5bc9b2907?d=583x585",
+"https://c.p02.c4a.im/user/1622327/exhibits/5578698/4_b5bdbf083f4ebac55473fad154c34d95?d=583x585",
+"https://c.p02.c4a.im/user/1622327/exhibits/5578698/5_10789f8ca9493b11335ca7f2110aeb29?d=583x585"
+],
+"structure": "（作品説明と写真より）本体に巻くバンドにハンドル受けが付いた小物。ハンドルを上向き・下向きどちらでも留められ、真鍮ボタンで外せる。",
+"size": "ミニサイズにも装着可",
+"spec": "ブッテーロ・真鍮ボタン",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "元作品 2,950円。型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
+},
+{
+"no": "146",
+"date": "2026-11-25",
+"type": "財布・小物",
+"name": "ミルのレザーグリップ（ハンドルまとめ）",
+"src": "minne「VINTAGEINOX コーヒーミル レザーグリップ【国産タンニンなめし本革使用】アウトドア キャンプギア エイジング 」を参考に再現（個人製作用）",
+"url": "https://minne.com/items/28150250",
+"photos": [
+"https://image.minne.com/minne/mobile_app_product/680x680cq85/d8bab06f3022d4980c2d2465d695b948fabc2fa7.jpeg/productimages/163776622/w1600xh1600/0907feeb4337bccf6a26fb44d826b1b5275dc3d4.png?1670234858",
+"https://image.minne.com/minne/mobile_app_product/680x680cq85/8e58232ad0359d5558fd921243310adaf593bf4b.jpeg/productimages/163776613/w1600xh1600/04529590072b37810b04d2d7f0433fb2f3684863.png?1670234848",
+"https://image.minne.com/minne/mobile_app_product/680x680cq85/103b2eb906e98f7303bd9642abf12491ebcc3d71.jpeg/productimages/163776611/w1600xh1600/e8b015a07f3734154117a0e1d70c0318b79d6008.png?1670234845",
+"https://image.minne.com/minne/mobile_app_product/680x680cq85/4ec12cad931d3156f5ddc0001f3abc4c56f2ac19.jpeg/productimages/163776616/w1600xh1600/74ba0409a39e4d105c426c078d3a2371a5e6b8df.png?1670234851",
+"https://image.minne.com/minne/mobile_app_product/680x680cq85/9648e0a1a0ad079a7d2fdf4a7072522873c843d8.jpeg/productimages/163776619/w1600xh1600/7b45de8efac3f543132e3958993417a6a696920c.png?1670234855",
+"https://image.minne.com/minne/mobile_app_product/680x680cq85/55690a070c8dad3a48189109b469cf7407298fb0.jpeg/productimages/163776605/w1600xh1600/4b9be59abfb9c67d4f8bdb92d1bb37626f866006.png?1670234838",
+"https://image.minne.com/minne/mobile_app_product/680x680cq85/8bb8d0b558bfefee553346fa64d1fb53e13e6bc1.jpeg/productimages/163776606/w1600xh1600/de6a40b5dad333297f7a1c5068474b8a7957b151.png?1670234841"
+],
+"structure": "（作品説明と写真より）本体に巻くボタン留めの帯。ハンドルと本体をまとめて収納でき、内側に滑り止め加工でグリップにもなる。少しきつめに作って伸びを見込む。",
+"size": "縦40×広げて200",
+"spec": "プレジオ（タンニン鞣し）2.0mm・ボタン",
+"level": "未評価",
+"status": "候補",
+"fav": false,
+"tags": [
+"コーヒー"
+],
+"memo": "型紙はまだ（☆お気に入りに入れたら優先して作る）。",
+"pattern": "",
+"parts": [],
+"patnote": ""
 }
 ]

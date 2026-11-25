@@ -101,6 +101,9 @@ table.parts th{font-size:11px;color:var(--sub);font-weight:600}
 <div class="ov" id="ov"><div class="sheet" id="sheet"></div></div>
 <script>
 const TYPES=["すべて","バッグ","財布・小物","収納・トレー","構造・展開図","TIPS"];
+const TAGICON={"コーヒー":"☕"};
+const tagLabel=t=>(TAGICON[t]||"#")+t;
+function allTags(){const s=new Set();data.forEach(d=>(d.tags||[]).forEach(t=>s.add(t)));return [...s]}
 const STS=["すべて","候補","型紙中","製作中","完成","保留"];
 const FAVF="★お気に入り";
 let data=[],fType="すべて",fSt="すべて";
@@ -110,15 +113,15 @@ function chips(el,list,cur,set){
   el.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{set(b.dataset.v);render();});
 }
 function render(){
-  chips(document.getElementById("typeChips"),TYPES,fType,v=>fType=v);
+  chips(document.getElementById("typeChips"),[...TYPES,...allTags().map(tagLabel)],fType,v=>fType=v);
   chips(document.getElementById("stChips"),[STS[0],FAVF,...STS.slice(1)],fSt,v=>fSt=v);
-  const list=data.filter(d=>(fType==="すべて"||d.type===fType)&&(fSt==="すべて"||(fSt===FAVF?isFav(d):eff(d)===fSt))).sort((a,b)=>b.no.localeCompare(a.no));
+  const list=data.filter(d=>(fType==="すべて"||d.type===fType||(d.tags||[]).some(t=>tagLabel(t)===fType))&&(fSt==="すべて"||(fSt===FAVF?isFav(d):eff(d)===fSt))).sort((a,b)=>b.no.localeCompare(a.no));
   document.getElementById("count").textContent=`${list.length}件 / 全${data.length}件`;
   const g=document.getElementById("grid");
   g.innerHTML=list.length?list.map(d=>`<div class="card" data-no="${esc(d.no)}"><button class="fav${isFav(d)?" on":""}" data-fav="${esc(d.no)}" aria-label="お気に入り">${isFav(d)?"★":"☆"}</button>
     ${d.photos&&d.photos.length?`<img src="${esc(d.photos[0])}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.onerror=null;this.className='ill';this.src='${esc(d.img||"")}'">`:`<img src="${esc(d.img||`img/${d.no}.jpg`)}" alt="" loading="lazy" class="${d.img?"ill":""}">`}
     <div class="cb"><div class="no">No.${esc(d.no)}</div><div class="nm">${esc(d.name)}</div>
-    <div class="meta"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span>${d.pattern?'<span class="badge">型紙</span>':""}${(pendFor(d)||{}).fix||((pendFor(d)||{}).status&&!getTok())?'<span class="pend">反映待ち</span>':""}</div></div></div>`).join("")
+    <div class="meta"><span class="tag">${esc(d.type)}</span>${(d.tags||[]).map(t=>`<span class="tag">${esc(tagLabel(t))}</span>`).join("")}<span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span>${d.pattern?'<span class="badge">型紙</span>':""}${(pendFor(d)||{}).fix||((pendFor(d)||{}).status&&!getTok())?'<span class="pend">反映待ち</span>':""}</div></div></div>`).join("")
     :`<div class="empty">該当なし</div>`;
   g.querySelectorAll(".card").forEach(c=>c.onclick=()=>open(c.dataset.no));
   g.querySelectorAll(".fav").forEach(b=>b.onclick=ev=>{ev.stopPropagation();toggleFav(b.dataset.fav)});
@@ -213,7 +216,7 @@ function open(no){
   document.getElementById("sheet").innerHTML=`<button class="close" id="cl">×</button>
    ${gallery(d)}
    <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2><button class="favbig${isFav(d)?" on":""}" id="favbig">${isFav(d)?"★ お気に入り":"☆ お気に入りに追加"}</button>
-   <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span><span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span></div>
+   <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span>${(d.tags||[]).map(t=>`<span class="tag">${esc(tagLabel(t))}</span>`).join("")}<span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span></div>
    ${actions(d)}${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
   document.getElementById("ov").classList.add("show");
   document.getElementById("sheet").scrollTop=0;
