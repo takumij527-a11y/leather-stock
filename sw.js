@@ -1,6 +1,6 @@
 // レザー参考ストック — オフライン用 Service Worker
 // 画像・型紙はキャッシュ優先、ページとdata.jsonはネット優先
-const VERSION = "v17";
+const VERSION = "v18";
 const CACHE = "leatherstock-" + VERSION;
 const CORE = ["./", "./index.html", "./data.json", "./manifest.webmanifest", "./icons/icon-192.png", "./icons/apple-touch-icon.png"];
 
