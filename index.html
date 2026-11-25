@@ -218,7 +218,7 @@ function open(no){
    <div class="sb"><div class="no">No.${esc(d.no)}・${esc(d.date)}</div><h2>${esc(d.name)}</h2><button class="favbig${isFav(d)?" on":""}" id="favbig">${isFav(d)?"★ お気に入り":"☆ お気に入りに追加"}</button>
    <div class="meta" style="margin-bottom:8px"><span class="tag">${esc(d.type)}</span>${(d.tags||[]).map(t=>`<span class="tag">${esc(tagLabel(t))}</span>`).join("")}<span class="lv">${esc(d.level)}</span><span class="st st-${esc(eff(d))}">${esc(eff(d))}</span></div>
    ${actions(d)}${pat(d)}${r("構造",d.structure)}${r("寸法目安（推定）",d.size)}${r("革・仕様（想定）",d.spec)}${r("メモ",d.memo)}${r("出典",d.src)}${d.url?`<div class="row"><b>元の作品ページ</b><p><a href="${esc(d.url)}" target="_blank" rel="noopener" style="color:var(--brown)">写真を見る（外部サイト）</a></p></div>`:""}</div>`;
-  document.getElementById("ov").classList.add("show");
+  showLayer(document.getElementById("ov"));
   document.getElementById("sheet").scrollTop=0;
   document.getElementById("cl").onclick=close;
   bindActions(d);
@@ -237,22 +237,33 @@ function pat(d){
    ${rows?`<table class="parts"><tr><th>部品</th><th>寸法mm</th><th>枚数</th><th>革厚</th></tr>${rows}</table>`:""}
    ${d.patnote?`<p style="margin-top:8px">${esc(d.patnote)}</p>`:""}</div>`;
 }
-function close(){document.getElementById("ov").classList.remove("show");}
+// 戻る操作（Androidの端スワイプ・戻るボタン）で、開いている画面を1つずつ閉じる
+const LAYERS=["setov","ov"];  // 上にあるものから
+function showLayer(el){if(el.classList.contains("show"))return;el.classList.add("show");history.pushState({layer:el.id},"")}
+function hideLayer(el){if(!el.classList.contains("show"))return;if(history.state&&history.state.layer===el.id)history.back();else el.classList.remove("show")}
+let exitArmed=0;
+history.replaceState({root:1},"");history.pushState({guard:1},"");
+window.addEventListener("popstate",()=>{
+  for(const id of LAYERS){const el=document.getElementById(id);if(el.classList.contains("show")){el.classList.remove("show");return}}
+  if(Date.now()-exitArmed<2000){history.back();return}   // 2秒以内にもう一度で閉じる
+  exitArmed=Date.now();history.pushState({guard:1},"");toast("もう一度戻るとアプリを閉じます");
+});
+function close(){hideLayer(document.getElementById("ov"));}
 document.getElementById("ov").onclick=e=>{if(e.target.id==="ov")close();};
 const DEF_WHY="これを1回やっておくと、ステータスも型紙修正もボタン1つでその場で反映されます。";
-function openSetup(msg){const so=document.getElementById("setov");document.getElementById("setWhy").textContent=msg?DEF_WHY+msg:DEF_WHY;setUpd();so.classList.add("show")}
+function openSetup(msg){const so=document.getElementById("setov");document.getElementById("setWhy").textContent=msg?DEF_WHY+msg:DEF_WHY;setUpd();showLayer(so)}
 function setUpd(){document.getElementById("tokState").textContent=getTok()?"設定済み（ワンタップ更新ON）":"まだ設定されていません"}
 async function saveTok(v){v=(v||"").trim();if(!/^(github_pat_|ghp_)/.test(v)){toast("github_pat_… の文字が見つかりません");return}
   try{localStorage.setItem(TKEY,v)}catch(e){toast("この端末に保存できませんでした");return}
   try{const j=await gh("");if(j.permissions&&j.permissions.push===false)throw new Error("leather-stockに書き込めません");
-    toast("設定できました。もうボタン1つで反映されます");document.getElementById("setov").classList.remove("show");
+    toast("設定できました。もうボタン1つで反映されます");hideLayer(document.getElementById("setov"));
     const o=document.getElementById("ov");if(o.classList.contains("show")){const no=(o.dataset.no||"");if(no)open(no)}render()}
   catch(e){try{localStorage.removeItem(TKEY)}catch(_){}toast("つながりませんでした。leather-stock を選んだか確認してね");}
   setUpd()}
 (function(){const so=document.getElementById("setov");
  document.getElementById("gear").onclick=()=>openSetup("");
- document.getElementById("setClose").onclick=()=>so.classList.remove("show");
- so.onclick=e=>{if(e.target===so)so.classList.remove("show")};
+ document.getElementById("setClose").onclick=()=>hideLayer(so);
+ so.onclick=e=>{if(e.target===so)hideLayer(so)};
  document.getElementById("tokPaste").onclick=async()=>{try{const t=await navigator.clipboard.readText();await saveTok(t)}catch(e){toast("貼り付けできませんでした。下の入力欄を使ってね");so.querySelector("details").open=true}};
  document.getElementById("tokSave").onclick=async()=>{const el=document.getElementById("tok");await saveTok(el.value);el.value=""};
  document.getElementById("tokDel").onclick=()=>{try{localStorage.removeItem(TKEY)}catch(e){};toast("削除しました");setUpd()};
